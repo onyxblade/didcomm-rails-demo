@@ -1,0 +1,5 @@
+services:
+  didcomm:
+    build: ./didcomm-http
+    ports:
+      - "3000:3000"
