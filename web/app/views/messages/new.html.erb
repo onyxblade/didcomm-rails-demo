@@ -1,0 +1,21 @@
+<h1>Send Message</h1>
+
+<%= form_with url: messages_path, method: :post, local: true do |f| %>
+  <label for="to_did">Recipient DID</label>
+  <input type="text" name="to_did" id="to_did" placeholder="did:web:example.com" required>
+
+  <label for="body">Message Body (text or JSON)</label>
+  <textarea name="body" id="body" required></textarea>
+
+  <label>Visibility</label>
+  <div style="margin-top: 0.25rem;">
+    <label style="display: inline; font-weight: normal;">
+      <input type="radio" name="visibility" value="private" checked> Private
+    </label>
+    <label style="display: inline; font-weight: normal; margin-left: 1rem;">
+      <input type="radio" name="visibility" value="public"> Public
+    </label>
+  </div>
+
+  <input type="submit" value="Send">
+<% end %>

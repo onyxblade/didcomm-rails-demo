@@ -1,15 +1,23 @@
 services:
+  web:
+    build: ./web
+    ports:
+      - "3001:3000"
+    env_file: .env
+    environment:
+      - DIDCOMM_SERVICE_URL=http://didcomm:3000
+      - RESOLVER_URL=http://uni-resolver-web:8080
+    depends_on:
+      - didcomm
+      - uni-resolver-web
+
   didcomm:
     build: ./didcomm-http
-    ports:
-      - "3000:3000"
 
   uni-resolver-web:
     image: universalresolver/uni-resolver-web:latest
-    ports:
-      - "8080:8080"
     environment:
-      uniresolver_web_driver_url_did_web: http://driver-did-web:8080/
+      uniresolver_web_driver_url_did_web: http://driver-did-uport:8081/
 
-  driver-did-web:
-    image: universalresolver/driver-did-web:latest
+  driver-did-uport:
+    image: uport/uni-resolver-driver-did-uport:latest

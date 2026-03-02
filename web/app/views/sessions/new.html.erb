@@ -1,0 +1,11 @@
+<h1>Login</h1>
+
+<%= form_with url: login_path, method: :post, local: true do |f| %>
+  <label for="username">Username</label>
+  <input type="text" name="username" id="username" required autofocus>
+
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" required>
+
+  <input type="submit" value="Log in">
+<% end %>

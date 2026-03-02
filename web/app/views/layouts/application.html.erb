@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "DIDComm Rails" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app %>
+    <style>
+      body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 1rem; }
+      nav { border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+      nav a { margin-right: 1rem; text-decoration: none; color: #0066cc; }
+      nav a:hover { text-decoration: underline; }
+      .flash { padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 4px; }
+      .flash.notice { background: #d4edda; color: #155724; }
+      .flash.alert { background: #f8d7da; color: #721c24; }
+      table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+      th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #ddd; }
+      th { background: #f5f5f5; }
+      label { display: block; margin-top: 0.5rem; font-weight: bold; }
+      input[type="text"], input[type="password"], textarea { width: 100%; padding: 0.5rem; margin-top: 0.25rem; box-sizing: border-box; }
+      textarea { height: 120px; font-family: monospace; }
+      button, input[type="submit"] { margin-top: 1rem; padding: 0.5rem 1rem; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+      button:hover, input[type="submit"]:hover { background: #0052a3; }
+      .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.8rem; }
+      .badge-sent { background: #cce5ff; color: #004085; }
+      .badge-received { background: #d4edda; color: #155724; }
+      .badge-failed { background: #f8d7da; color: #721c24; }
+      .badge-delivered { background: #d4edda; color: #155724; }
+      .badge-public { background: #fff3cd; color: #856404; }
+      .badge-private { background: #e2e3e5; color: #383d41; }
+      pre { background: #f5f5f5; padding: 1rem; overflow-x: auto; border-radius: 4px; }
+      .mono { font-family: monospace; font-size: 0.85rem; word-break: break-all; }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <%= link_to "Home", root_path %>
+      <% if current_admin %>
+        <%= link_to "Messages", messages_path %>
+        <%= link_to "New Message", new_message_path %>
+        <%= button_to "Logout", logout_path, method: :delete, style: "display:inline; background:none; color:#0066cc; border:none; padding:0; cursor:pointer; font-size:inherit;" %>
+      <% else %>
+        <%= link_to "Login", login_path if Admin.any? %>
+      <% end %>
+    </nav>
+
+    <% if flash[:notice] %>
+      <div class="flash notice"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="flash alert"><%= flash[:alert] %></div>
+    <% end %>
+
+    <%= yield %>
+  </body>
+</html>

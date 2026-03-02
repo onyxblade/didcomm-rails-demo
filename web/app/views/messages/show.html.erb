@@ -1,0 +1,25 @@
+<h1>Message Detail</h1>
+
+<p><%= link_to "Back to messages", messages_path %></p>
+
+<table>
+  <tr><th>DIDComm ID</th><td class="mono"><%= @message.didcomm_id %></td></tr>
+  <tr><th>Direction</th><td><span class="badge badge-<%= @message.direction %>"><%= @message.direction %></span></td></tr>
+  <tr><th>From</th><td class="mono"><%= @message.from_did %></td></tr>
+  <tr><th>To</th><td class="mono"><%= @message.to_did %></td></tr>
+  <tr><th>Type</th><td class="mono"><%= @message.message_type %></td></tr>
+  <tr><th>Status</th><td><span class="badge badge-<%= @message.status %>"><%= @message.status %></span></td></tr>
+  <tr><th>Visibility</th><td><span class="badge badge-<%= @message.visibility %>"><%= @message.visibility %></span></td></tr>
+  <tr><th>Created</th><td><%= @message.created_at %></td></tr>
+</table>
+
+<h2>Body</h2>
+<pre><%= JSON.pretty_generate(@message.body_parsed) rescue @message.body %></pre>
+
+<% if @message.packed_message.present? %>
+  <h2>Packed Message</h2>
+  <details>
+    <summary>Show encrypted form</summary>
+    <pre><%= @message.packed_message %></pre>
+  </details>
+<% end %>

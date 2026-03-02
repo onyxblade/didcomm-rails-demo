@@ -1,0 +1,33 @@
+<h1>Public Feed</h1>
+<p>Public DIDComm messages from this node.</p>
+
+<% if @identity %>
+  <p>This node's DID: <code><%= @identity.did %></code></p>
+<% end %>
+
+<% if @messages.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Direction</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Body</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @messages.each do |msg| %>
+        <tr>
+          <td><span class="badge badge-<%= msg.direction %>"><%= msg.direction %></span></td>
+          <td class="mono"><%= truncate(msg.from_did || "-", length: 30) %></td>
+          <td class="mono"><%= truncate(msg.to_did || "-", length: 30) %></td>
+          <td><%= truncate(msg.body, length: 80) %></td>
+          <td><%= msg.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No public messages yet.</p>
+<% end %>

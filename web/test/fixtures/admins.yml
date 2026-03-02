@@ -1,0 +1,3 @@
+one:
+  username: admin
+  password_digest: <%= BCrypt::Password.create("password123") %>

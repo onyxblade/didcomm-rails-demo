@@ -1,0 +1,21 @@
+sent_public:
+  didcomm_id: "msg-001"
+  direction: "sent"
+  from_did: "did:web:localhost%3A3001"
+  to_did: "did:web:example.com"
+  message_type: "https://didcomm.org/basicmessage/2.0/message"
+  body: '{"content":"Hello"}'
+  packed_message: ""
+  visibility: "public"
+  status: "delivered"
+
+received_private:
+  didcomm_id: "msg-002"
+  direction: "received"
+  from_did: "did:web:example.com"
+  to_did: "did:web:localhost%3A3001"
+  message_type: "https://didcomm.org/basicmessage/2.0/message"
+  body: '{"content":"Hi back"}'
+  packed_message: ""
+  visibility: "private"
+  status: "delivered"
