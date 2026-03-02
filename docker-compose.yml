@@ -7,6 +7,8 @@ services:
     environment:
       - DIDCOMM_SERVICE_URL=http://didcomm:3000
       - RESOLVER_URL=http://uni-resolver-web:8080
+    volumes:
+      - ./web/storage:/app/storage
     depends_on:
       - didcomm
       - uni-resolver-web

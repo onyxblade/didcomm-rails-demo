@@ -9,8 +9,6 @@ RUN bundle install
 
 COPY . .
 
-RUN SECRET_KEY_BASE=placeholder rails db:prepare
-
 EXPOSE 3000
 
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["sh", "-c", "rails db:prepare && rails server -b 0.0.0.0"]

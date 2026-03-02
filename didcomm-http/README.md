@@ -31,19 +31,11 @@ node server.js
 ## Project Structure
 
 ```
-server.js        # HTTP service (~120 lines)
+server.js        # HTTP service
 package.json     # Dependencies: express + didcomm-node
 Dockerfile       # Node 20 Alpine image
 test.sh          # Test script (10 test cases)
 ```
-
-## Design Principles
-
-- **Stateless**: DID Documents and secrets are passed in with each request; the service stores nothing
-- **Minimal code**: Core service is only ~120 lines
-- **Full-featured**: Supports all DIDComm v2 operations (encrypt, sign, plaintext, decrypt, forward routing)
-
----
 
 ## API Reference
 
