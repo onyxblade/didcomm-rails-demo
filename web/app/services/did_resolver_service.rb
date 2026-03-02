@@ -16,13 +16,6 @@ class DidResolverService
       raise "DID resolution failed for #{did}: HTTP #{response.code}"
     end
 
-    parsed = JSON.parse(response.body)
-    did_document = parsed["didDocument"]
-
-    unless did_document
-      raise "DID resolution returned no document for #{did}"
-    end
-
-    did_document
+    JSON.parse(response.body)
   end
 end
