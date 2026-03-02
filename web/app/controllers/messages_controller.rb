@@ -24,88 +24,33 @@ class MessagesController < ApplicationController
       { "content" => body_content }
     end
 
-    didcomm_id = SecureRandom.uuid
+    message = Message.create!(
+      didcomm_id: SecureRandom.uuid,
+      direction: "sent",
+      from_did: identity.did,
+      to_did: to_did,
+      message_type: "https://didcomm.org/basicmessage/2.0/message",
+      body: body_hash.to_json,
+      visibility: visibility,
+      status: "draft"
+    )
 
-    message_json = {
-      id: didcomm_id,
-      typ: "application/didcomm-plain+json",
-      type: "https://didcomm.org/basicmessage/2.0/message",
-      from: identity.did,
-      to: [to_did],
-      created_time: Time.now.to_i,
-      body: body_hash
-    }
-
-    begin
-      # Resolve the target DID document
-      target_did_doc = DidResolverService.resolve(to_did)
-
-      # Pack the message
-      our_did_doc = identity.did_document
-      result = DidcommService.pack_encrypted(
-        message_json,
-        to: to_did,
-        from: identity.did,
-        did_docs: [our_did_doc, target_did_doc],
-        secrets: identity.secrets
-      )
-      packed = result["packed_message"]
-
-      # Find service endpoint from target DID doc
-      endpoint = extract_service_endpoint(target_did_doc)
-
-      # Send to target
-      status = "failed"
-      if endpoint
-        uri = URI(endpoint)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = uri.scheme == "https"
-        http.open_timeout = 10
-        http.read_timeout = 30
-        req = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/didcomm-encrypted+json")
-        req.body = packed
-        response = http.request(req)
-        status = response.is_a?(Net::HTTPSuccess) ? "delivered" : "failed"
-      else
-        status = "sent"
-      end
-
-      Message.create!(
-        didcomm_id: didcomm_id,
-        direction: "sent",
-        from_did: identity.did,
-        to_did: to_did,
-        message_type: message_json[:type],
-        body: body_hash.to_json,
-        packed_message: packed,
-        visibility: visibility,
-        status: status
-      )
-
-      redirect_to messages_path, notice: "Message #{status}."
-    rescue => e
-      Message.create!(
-        didcomm_id: didcomm_id,
-        direction: "sent",
-        from_did: identity.did,
-        to_did: to_did,
-        message_type: message_json[:type],
-        body: body_hash.to_json,
-        visibility: visibility,
-        status: "failed"
-      )
-
-      redirect_to messages_path, alert: "Failed to send: #{e.message}"
+    sender = MessageSender.new(message)
+    if sender.deliver
+      redirect_to message_path(message), notice: "Message #{message.status}."
+    else
+      redirect_to message_path(message), alert: "Failed to send: #{message.error_message}"
     end
   end
 
-  private
+  def resend
+    message = Message.find(params[:id])
 
-  def extract_service_endpoint(did_doc)
-    services = did_doc["service"] || did_doc[:service] || []
-    svc = services.find { |s| s["type"] == "DIDCommMessaging" || s[:type] == "DIDCommMessaging" }
-    return nil unless svc
-    ep = svc["serviceEndpoint"] || svc[:serviceEndpoint]
-    ep.is_a?(Hash) ? (ep["uri"] || ep[:uri]) : ep
+    sender = MessageSender.new(message)
+    if sender.deliver
+      redirect_to message_path(message), notice: "Message #{message.status}."
+    else
+      redirect_to message_path(message), alert: "Failed to send: #{message.error_message}"
+    end
   end
 end

@@ -44,7 +44,7 @@ class Identity < ApplicationRecord
           id: "#{did}#didcomm",
           type: "DIDCommMessaging",
           serviceEndpoint: {
-            uri: "http://#{domain}/didcomm",
+            uri: "https://#{domain}/didcomm",
             accept: ["didcomm/v2"],
             routingKeys: []
           }

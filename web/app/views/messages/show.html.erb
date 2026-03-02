@@ -13,6 +13,15 @@
   <tr><th>Created</th><td><%= @message.created_at %></td></tr>
 </table>
 
+<% if @message.error_message.present? %>
+  <h2>Error</h2>
+  <pre style="color: #c00;"><%= @message.error_message %></pre>
+<% end %>
+
+<% if @message.direction == "sent" && @message.status.in?(%w[failed draft]) %>
+  <p><%= button_to "Resend", resend_message_path(@message), method: :post %></p>
+<% end %>
+
 <h2>Body</h2>
 <pre><%= JSON.pretty_generate(@message.body_parsed) rescue @message.body %></pre>
 

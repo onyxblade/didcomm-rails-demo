@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   delete "logout", to: "sessions#destroy"
 
   # Messages (admin, requires login)
-  resources :messages, only: [:index, :new, :create, :show]
+  resources :messages, only: [:index, :new, :create, :show] do
+    post :resend, on: :member
+  end
 
   # Receive DIDComm messages (API, no auth)
   post "didcomm", to: "inbox#create"
