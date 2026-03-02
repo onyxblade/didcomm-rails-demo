@@ -104,6 +104,8 @@ class MessagesController < ApplicationController
   def extract_service_endpoint(did_doc)
     services = did_doc["service"] || did_doc[:service] || []
     svc = services.find { |s| s["type"] == "DIDCommMessaging" || s[:type] == "DIDCommMessaging" }
-    svc && (svc["serviceEndpoint"] || svc[:serviceEndpoint])
+    return nil unless svc
+    ep = svc["serviceEndpoint"] || svc[:serviceEndpoint]
+    ep.is_a?(Hash) ? (ep["uri"] || ep[:uri]) : ep
   end
 end
