@@ -3,3 +3,13 @@ services:
     build: ./didcomm-http
     ports:
       - "3000:3000"
+
+  uni-resolver-web:
+    image: universalresolver/uni-resolver-web:latest
+    ports:
+      - "8080:8080"
+    environment:
+      uniresolver_web_driver_url_did_web: http://driver-did-web:8080/
+
+  driver-did-web:
+    image: universalresolver/driver-did-web:latest

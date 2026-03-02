@@ -14,12 +14,23 @@ Build a Rails application that performs DIDComm v2 operations (encrypt, sign, de
 │  Rails App   │  localhost:3000   │  DIDComm HTTP    │
 │              │  ◄─────────────── │  (Node + WASM)   │
 └──────────────┘                   └──────────────────┘
+        │
+        │  HTTP                    ┌──────────────────┐
+        └─────────────────────────►│ Universal        │
+           localhost:8080          │ Resolver (did:web)│
+                                   └────────┬─────────┘
+                                            │
+                                   ┌────────▼─────────┐
+                                   │ driver-did-web   │
+                                   └──────────────────┘
 ```
 
 - **didcomm-http**: A lightweight Node.js service (~120 lines) wrapping [didcomm-rust](https://github.com/sicpa-dlab/didcomm-rust) WASM bindings. Stateless — DID Documents and secrets are passed in with each request.
+- **uni-resolver-web**: [Universal Resolver](https://github.com/decentralized-identity/universal-resolver) instance configured with `did:web` only. Rails will call its REST API to resolve DIDs into DID Documents.
+- **driver-did-web**: The `did:web` driver used by the Universal Resolver.
 - **Rails app**: (TODO) A Rails application that demonstrates DIDComm messaging by calling the didcomm-http service.
 
-Both services are orchestrated via `docker-compose.yml`.
+All services are orchestrated via `docker-compose.yml`.
 
 ## Project Structure
 
@@ -35,6 +46,14 @@ Both services are orchestrated via `docker-compose.yml`.
 └── (rails app - TODO)
 ```
 
+### Resolver API
+
+Resolve a DID Document:
+
+```bash
+curl http://localhost:8080/1.0/identifiers/did:web:did.actor:alice
+```
+
 ## Quick Start
 
 ```bash
@@ -47,4 +66,5 @@ docker compose up --build
 - [x] API documentation (didcomm-http/README.md)
 - [x] Integration tests (didcomm-http/test.sh)
 - [x] Docker Compose setup
+- [x] Universal Resolver (did:web)
 - [ ] Rails application
