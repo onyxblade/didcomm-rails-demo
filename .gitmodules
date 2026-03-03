@@ -1,0 +1,3 @@
+[submodule "didcomm-http"]
+	path = didcomm-http
+	url = git@github.com:onyxblade/didcomm-http.git
