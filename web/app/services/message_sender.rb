@@ -1,8 +1,9 @@
 class MessageSender
   attr_reader :message, :error
 
-  def initialize(message)
+  def initialize(message, anonymous: false)
     @message = message
+    @anonymous = anonymous
     @error = nil
   end
 
@@ -13,23 +14,31 @@ class MessageSender
       id: message.didcomm_id,
       typ: "application/didcomm-plain+json",
       type: message.message_type,
-      from: Identity.did,
       to: [message.to_did],
       created_time: message.created_at.to_i,
       body: message.body_parsed
     }
+    message_json[:from] = Identity.did unless @anonymous
 
     # Step 1: Resolve target DID
     target_did_doc = DidcommService.resolve_did(message.to_did)
 
     # Step 2: Pack the message
-    result = DidcommService.pack_encrypted(
-      message_json,
-      to: message.to_did,
-      from: Identity.did,
-      did_docs: [identity.did_document, target_did_doc],
-      secrets: identity.secrets
-    )
+    result = if @anonymous
+      DidcommService.pack_anon(
+        message_json,
+        to: message.to_did,
+        did_docs: [target_did_doc]
+      )
+    else
+      DidcommService.pack_encrypted(
+        message_json,
+        to: message.to_did,
+        from: Identity.did,
+        did_docs: [identity.did_document, target_did_doc],
+        secrets: identity.secrets
+      )
+    end
     packed = result["packedMessage"]
     message.update!(packed_message: packed)
 

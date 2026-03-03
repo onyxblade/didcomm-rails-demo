@@ -1,6 +1,16 @@
 class DidcommService
   BASE_URL = ENV.fetch("DIDCOMM_SERVICE_URL", "http://didcomm:3000")
 
+  def self.pack_anon(message, to:, did_docs:)
+    post("/didcomm/pack/encrypted", {
+      message: message,
+      to: to,
+      options: { forward: false },
+      didDocs: did_docs,
+      secrets: []
+    })
+  end
+
   def self.pack_encrypted(message, to:, from:, did_docs:, secrets:)
     post("/didcomm/pack/encrypted", {
       message: message,

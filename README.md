@@ -66,6 +66,22 @@ Then visit:
 - `https://example.com/.well-known/did.json` — View your DID Document (auto-generated on first request)
 - `https://example.com/login` — Log in with your `ADMIN_PASSWORD` to send and view messages
 
+### Anonymous Messaging (No Domain Required)
+
+DIDComm v2 supports **anoncrypt** — anonymous encryption where the sender's identity is not revealed. When sending a message, check the "Send anonymously" checkbox to use this mode.
+
+Anonymous messages do not require a real domain. Since the sender's DID is not included, the recipient does not need to resolve your DID Document. This means you can run locally (e.g. `DOMAIN=localhost`) and still send messages to any publicly reachable DIDComm endpoint:
+
+```
+RAILS_ENV=development
+DOMAIN=localhost
+HOST_PORT=3001
+SECRET_KEY_BASE=change-me-to-a-random-secret
+ADMIN_PASSWORD=change-me
+```
+
+Normal (authenticated) messages still require a public domain so that the recipient can resolve your `did:web` and verify the sender.
+
 ## Key Endpoints
 
 | Endpoint | Description |
