@@ -1,6 +1,6 @@
 services:
   web:
-    image: onyxblade/didcomm-rails-demo-web:latest
+    build: web
     ports:
       - "${HOST_PORT}:3000"
     env_file: .env
