@@ -13,7 +13,6 @@ class MessagesController < ApplicationController
   end
 
   def create
-    identity = Identity.instance
     to_did = params[:to_did].strip
     body_content = params[:body].strip
     visibility = params[:visibility] || "private"
@@ -27,7 +26,7 @@ class MessagesController < ApplicationController
     message = Message.create!(
       didcomm_id: SecureRandom.uuid,
       direction: "sent",
-      from_did: identity.did,
+      from_did: Identity.did,
       to_did: to_did,
       message_type: "https://didcomm.org/basicmessage/2.0/message",
       body: body_hash.to_json,

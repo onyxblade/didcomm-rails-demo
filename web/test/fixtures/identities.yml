@@ -1,6 +1,4 @@
 one:
-  domain: "localhost:3001"
-  did: "did:web:localhost%3A3001"
   ed25519_public_jwk: '{"kty":"OKP","crv":"Ed25519","x":"G-boxFB6vOZBu-wXkm-9Lh79I8nf9Z50cILaOgKKGww"}'
   ed25519_private_jwk: '{"kty":"OKP","crv":"Ed25519","x":"G-boxFB6vOZBu-wXkm-9Lh79I8nf9Z50cILaOgKKGww","d":"pFRUKkyzx4kHdJtFSnlPA9WzqkDT1HWV0xZ5OYZd2SY"}'
   x25519_public_jwk: '{"kty":"OKP","crv":"X25519","x":"avH0O2Y4tqLAq8y9zpianr8ajii5m4F_mICrzNlatXs"}'

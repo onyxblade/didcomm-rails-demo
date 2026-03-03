@@ -10,11 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_03_144451) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_145858) do
   create_table "identities", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "did"
-    t.string "domain"
     t.text "ed25519_private_jwk"
     t.text "ed25519_public_jwk"
     t.datetime "updated_at", null: false

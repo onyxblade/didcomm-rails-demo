@@ -3,11 +3,16 @@ class Identity < ApplicationRecord
     def initialize = super("Identity not configured. Run setup first.")
   end
 
-  validates :domain, presence: true
-  validates :did, presence: true
-
   def self.instance
     first || raise(NotConfiguredError)
+  end
+
+  def self.domain
+    ENV.fetch("DOMAIN", "localhost:3000")
+  end
+
+  def self.did
+    "did:web:#{domain.gsub(":", "%3A")}"
   end
 
   def generate_keys!
@@ -21,6 +26,9 @@ class Identity < ApplicationRecord
   end
 
   def did_document
+    did = self.class.did
+    domain = self.class.domain
+
     {
       id: did,
       keyAgreement: ["#{did}#key-x25519-1"],
@@ -54,6 +62,8 @@ class Identity < ApplicationRecord
   end
 
   def secrets
+    did = self.class.did
+
     [
       {
         id: "#{did}#key-x25519-1",

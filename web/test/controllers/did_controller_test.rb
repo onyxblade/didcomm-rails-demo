@@ -6,7 +6,7 @@ class DidControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     doc = JSON.parse(response.body)
-    assert_equal identities(:one).did, doc["id"]
+    assert_equal Identity.did, doc["id"]
     assert doc.key?("keyAgreement")
     assert doc.key?("authentication")
     assert doc.key?("verificationMethod")

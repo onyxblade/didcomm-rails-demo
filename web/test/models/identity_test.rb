@@ -1,15 +1,8 @@
 require "test_helper"
 
 class IdentityTest < ActiveSupport::TestCase
-  test "validates presence of domain and did" do
-    identity = Identity.new
-    assert_not identity.valid?
-    assert_includes identity.errors[:domain], "can't be blank"
-    assert_includes identity.errors[:did], "can't be blank"
-  end
-
   test "generate_keys! populates all key fields" do
-    identity = Identity.new(domain: "example.com", did: "did:web:example.com")
+    identity = Identity.new
     identity.generate_keys!
 
     assert_not_nil identity.ed25519_public_jwk
@@ -31,13 +24,18 @@ class IdentityTest < ActiveSupport::TestCase
     assert_equal "X25519", x_pub["crv"]
   end
 
+  test "did and domain are derived from ENV" do
+    assert_equal ENV.fetch("DOMAIN", "localhost:3000"), Identity.domain
+    assert Identity.did.start_with?("did:web:")
+  end
+
   test "did_document returns correct structure" do
     identity = identities(:one)
     doc = identity.did_document
 
-    assert_equal identity.did, doc[:id]
-    assert_includes doc[:keyAgreement], "#{identity.did}#key-x25519-1"
-    assert_includes doc[:authentication], "#{identity.did}#key-ed25519-1"
+    assert_equal Identity.did, doc[:id]
+    assert_includes doc[:keyAgreement], "#{Identity.did}#key-x25519-1"
+    assert_includes doc[:authentication], "#{Identity.did}#key-ed25519-1"
     assert_equal 2, doc[:verificationMethod].length
     assert_equal 1, doc[:service].length
     assert_equal "DIDCommMessaging", doc[:service][0][:type]

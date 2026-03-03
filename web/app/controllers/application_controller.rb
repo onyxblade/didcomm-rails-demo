@@ -19,10 +19,7 @@ class ApplicationController < ActionController::Base
   def ensure_identity
     return if Identity.any?
 
-    domain = ENV.fetch("DOMAIN", "localhost:3000")
-    did = "did:web:#{domain.gsub(":", "%3A")}"
-
-    identity = Identity.new(domain: domain, did: did)
+    identity = Identity.new
     identity.generate_keys!
     identity.save!
   end

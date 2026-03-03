@@ -1,9 +1,7 @@
 <h1>Public Feed</h1>
 <p>Public DIDComm messages from this node.</p>
 
-<% if @identity %>
-  <p>This node's DID: <code><%= @identity.did %></code></p>
-<% end %>
+<p>This node's DID: <code><%= Identity.did %></code></p>
 
 <% if @messages.any? %>
   <table>
