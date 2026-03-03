@@ -1,5 +1,3 @@
-require "net/http"
-
 class DidcommService
   BASE_URL = ENV.fetch("DIDCOMM_SERVICE_URL", "http://didcomm:3000")
 
@@ -28,20 +26,13 @@ class DidcommService
   end
 
   def self.post(path, body)
-    uri = URI("#{BASE_URL}#{path}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.open_timeout = 10
-    http.read_timeout = 30
+    response = HTTP.timeout(connect: 10, read: 30)
+      .post("#{BASE_URL}#{path}", json: body)
 
-    request = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/json")
-    request.body = body.to_json
+    parsed = response.parse
 
-    response = http.request(request)
-
-    parsed = JSON.parse(response.body)
-
-    unless response.is_a?(Net::HTTPSuccess)
-      raise "DIDComm service error: #{parsed["error"] || response.code}"
+    unless response.status.success?
+      raise "DIDComm service error: #{parsed["error"] || response.status}"
     end
 
     parsed

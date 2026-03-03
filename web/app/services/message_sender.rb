@@ -41,20 +41,15 @@ class MessageSender
       return false
     end
 
-    uri = URI(endpoint)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = uri.scheme == "https"
-    http.open_timeout = 10
-    http.read_timeout = 30
-    req = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/didcomm-encrypted+json")
-    req.body = packed
-    response = http.request(req)
+    response = HTTP.timeout(connect: 10, read: 30)
+      .headers("Content-Type" => "application/didcomm-encrypted+json")
+      .post(endpoint, body: packed)
 
-    if response.is_a?(Net::HTTPSuccess)
+    if response.status.success?
       message.update!(status: "delivered", error_message: nil)
       true
     else
-      message.update!(status: "failed", error_message: "HTTP #{response.code}: #{response.body.truncate(500)}")
+      message.update!(status: "failed", error_message: "HTTP #{response.status}: #{response.to_s.truncate(500)}")
       false
     end
   rescue => e
