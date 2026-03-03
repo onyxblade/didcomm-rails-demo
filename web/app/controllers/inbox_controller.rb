@@ -9,7 +9,7 @@ class InboxController < ApplicationController
     # Extract sender DID from JWE protected header and resolve their DID doc
     sender_did = extract_sender_did(packed_message)
     did_docs = [identity.did_document]
-    did_docs.unshift(DidResolverService.resolve(sender_did)) if sender_did
+    did_docs.unshift(DidcommService.resolve_did(sender_did)) if sender_did
 
     result = DidcommService.unpack(
       packed_message,

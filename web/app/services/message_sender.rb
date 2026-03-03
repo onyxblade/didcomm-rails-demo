@@ -20,7 +20,7 @@ class MessageSender
     }
 
     # Step 1: Resolve target DID
-    target_did_doc = DidResolverService.resolve(message.to_did)
+    target_did_doc = DidcommService.resolve_did(message.to_did)
 
     # Step 2: Pack the message
     result = DidcommService.pack_encrypted(
@@ -30,7 +30,7 @@ class MessageSender
       did_docs: [identity.did_document, target_did_doc],
       secrets: identity.secrets
     )
-    packed = result["packed_message"]
+    packed = result["packedMessage"]
     message.update!(packed_message: packed)
 
     # Step 3: Find endpoint and send
