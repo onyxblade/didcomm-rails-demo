@@ -26,7 +26,7 @@ You only need two files to run the service: `docker-compose.yml` and `.env`.
 ```
 RAILS_ENV=production
 DOMAIN=example.com
-PORT=3001
+HOST_PORT=3001
 SECRET_KEY_BASE=change-me-to-a-random-secret
 ADMIN_PASSWORD=change-me
 ```
@@ -38,7 +38,7 @@ services:
   web:
     image: onyxblade/didcomm-rails-demo-web:latest
     ports:
-      - "${PORT}:3000"
+      - "${HOST_PORT}:3000"
     env_file: .env
     environment:
       - DIDCOMM_SERVICE_URL=http://didcomm:3000

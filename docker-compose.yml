@@ -2,7 +2,7 @@ services:
   web:
     image: onyxblade/didcomm-rails-demo-web:latest
     ports:
-      - "${PORT}:3000"
+      - "${HOST_PORT}:3000"
     env_file: .env
     environment:
       - DIDCOMM_SERVICE_URL=http://didcomm:3000
