@@ -13,7 +13,7 @@ class MessageSender
       id: message.didcomm_id,
       typ: "application/didcomm-plain+json",
       type: message.message_type,
-      from: identity.did,
+      from: Identity.did,
       to: [message.to_did],
       created_time: message.created_at.to_i,
       body: message.body_parsed
@@ -26,7 +26,7 @@ class MessageSender
     result = DidcommService.pack_encrypted(
       message_json,
       to: message.to_did,
-      from: identity.did,
+      from: Identity.did,
       did_docs: [identity.did_document, target_did_doc],
       secrets: identity.secrets
     )
