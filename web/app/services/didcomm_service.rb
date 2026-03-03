@@ -23,21 +23,8 @@ class DidcommService
   end
 
   def self.resolve_did(did)
-    uri = URI("#{BASE_URL}/did/resolve/#{CGI.escape(did)}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.open_timeout = 10
-    http.read_timeout = 30
-
-    response = http.get(uri.request_uri, "Accept" => "application/json")
-
-    parsed = JSON.parse(response.body)
-
-    unless response.is_a?(Net::HTTPSuccess)
-      error = parsed.dig("didResolutionMetadata", "error") || response.code
-      raise "DID resolution failed for #{did}: #{error}"
-    end
-
-    parsed["didDocument"]
+    result = post("/did/resolve", { did: did })
+    result["didDocument"]
   end
 
   def self.post(path, body)
