@@ -14,45 +14,57 @@ Browser ──► Rails App (port 3001)
                 └── serves /.well-known/did.json for own DID
 ```
 
-- **web**: A Rails 8.1 application with password-based auth (via `ADMIN_PASSWORD` env var), message sending/receiving, a DIDComm inbox endpoint, and a public message feed. Generates Ed25519/X25519 key pairs on first request and serves its own `did:web` DID Document.
+- **web**: A Rails 8.1 application with password-based auth (via `ADMIN_PASSWORD` env var), message sending/receiving, and a DIDComm inbox endpoint. Generates Ed25519/X25519 key pairs on first request and serves its own `did:web` DID Document.
 - **[didcomm-http](https://github.com/onyxblade/didcomm-http)**: A TypeScript/Fastify service wrapping [didcomm-rust](https://github.com/sicpa-dlab/didcomm-rust) WASM bindings with built-in DID resolution (did:web + did:webvh). Stateless — DID Documents and secrets are passed in with each request. Provides OpenAPI documentation at `/documentation`.
-
-All services are orchestrated via `docker-compose.yml`.
-
-## Project Structure
-
-```
-.
-├── docker-compose.yml       # Orchestrates all services
-├── .env.example             # Environment config template
-├── web/                     # Rails application
-│   ├── Dockerfile
-│   ├── build.sh             # Build and push Docker image
-│   ├── app/
-│   │   ├── models/          # Identity, Message
-│   │   ├── controllers/     # Sessions, Messages, Inbox, Did, Public
-│   │   ├── services/        # DidcommService (pack/unpack + DID resolution)
-│   │   └── views/           # HTML views
-│   └── test/                # Model and controller tests
-└── didcomm-http/            # DIDComm HTTP service (git submodule)
-```
 
 ## Quick Start
 
+You only need two files to run the service: `docker-compose.yml` and `.env`.
+
+1. Create a `.env` file:
+
+```
+RAILS_ENV=production
+DOMAIN=example.com
+PORT=3001
+SECRET_KEY_BASE=change-me-to-a-random-secret
+ADMIN_PASSWORD=change-me
+```
+
+2. Create a `docker-compose.yml`:
+
+```yaml
+services:
+  web:
+    image: onyxblade/didcomm-rails-demo-web:latest
+    ports:
+      - "${PORT}:3000"
+    env_file: .env
+    environment:
+      - DIDCOMM_SERVICE_URL=http://didcomm:3000
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - didcomm
+
+  didcomm:
+    image: onyxblade/didcomm-http:latest
+```
+
+3. Start the services:
+
 ```bash
-cp .env.example .env         # Set DOMAIN, SECRET_KEY_BASE, and ADMIN_PASSWORD
-docker compose up --build
+docker compose up
 ```
 
 `DOMAIN` must be a publicly reachable domain (not `localhost`) because `did:web` resolution requires the DID Document to be fetchable over HTTPS by external resolvers.
 
+The SQLite database is persisted to `./storage/` via a Docker volume mount.
+
 Then visit:
 
 - `https://example.com/.well-known/did.json` — View your DID Document (auto-generated on first request)
-- `https://example.com/login` — Log in with your `ADMIN_PASSWORD` to send messages
-- `https://example.com/` — Public message feed
-
-The SQLite database is persisted to `web/storage/` via a Docker volume mount.
+- `https://example.com/login` — Log in with your `ADMIN_PASSWORD` to send and view messages
 
 ## Key Endpoints
 
@@ -63,4 +75,29 @@ The SQLite database is persisted to `web/storage/` via a Docker volume mount.
 | `GET /messages/new` | Send a DIDComm message (requires login) |
 | `POST /didcomm` | Receive DIDComm messages (open API endpoint) |
 | `GET /.well-known/did.json` | Serve this node's DID Document |
-| `GET /` | Public message feed |
+| `GET /` | Landing page |
+
+## Development
+
+```bash
+cp .env.example .env         # Set DOMAIN, SECRET_KEY_BASE, and ADMIN_PASSWORD
+docker compose up --build
+```
+
+### Project Structure
+
+```
+.
+├── docker-compose.yml       # Orchestrates all services
+├── .env.example             # Environment config template
+├── build.sh                 # Build and push Docker image
+├── web/                     # Rails application
+│   ├── Dockerfile
+│   ├── app/
+│   │   ├── models/          # Identity, Message
+│   │   ├── controllers/     # Sessions, Messages, Inbox, Did, Public
+│   │   ├── services/        # DidcommService (pack/unpack + DID resolution)
+│   │   └── views/           # HTML views
+│   └── test/                # Model and controller tests
+└── didcomm-http/            # DIDComm HTTP service (git submodule)
+```
