@@ -14,7 +14,7 @@ Browser ──► Rails App (port 3001)
                 └── serves /.well-known/did.json for own DID
 ```
 
-- **web**: A Rails 8.1 application with admin auth, message sending/receiving, a DIDComm inbox endpoint, and a public message feed. Generates Ed25519/X25519 key pairs and serves its own `did:web` DID Document.
+- **web**: A Rails 8.1 application with password-based auth (via `ADMIN_PASSWORD` env var), message sending/receiving, a DIDComm inbox endpoint, and a public message feed. Generates Ed25519/X25519 key pairs on first request and serves its own `did:web` DID Document.
 - **[didcomm-http](https://github.com/onyxblade/didcomm-http)**: A TypeScript/Fastify service wrapping [didcomm-rust](https://github.com/sicpa-dlab/didcomm-rust) WASM bindings with built-in DID resolution (did:web + did:webvh). Stateless — DID Documents and secrets are passed in with each request. Provides OpenAPI documentation at `/documentation`.
 
 All services are orchestrated via `docker-compose.yml`.
@@ -29,8 +29,8 @@ All services are orchestrated via `docker-compose.yml`.
 │   ├── Dockerfile
 │   ├── build.sh             # Build and push Docker image
 │   ├── app/
-│   │   ├── models/          # Identity, Admin, Message
-│   │   ├── controllers/     # Setup, Sessions, Messages, Inbox, Did, Public
+│   │   ├── models/          # Identity, Message
+│   │   ├── controllers/     # Sessions, Messages, Inbox, Did, Public
 │   │   ├── services/        # DidcommService (pack/unpack + DID resolution)
 │   │   └── views/           # HTML views
 │   └── test/                # Model and controller tests
@@ -40,7 +40,7 @@ All services are orchestrated via `docker-compose.yml`.
 ## Quick Start
 
 ```bash
-cp .env.example .env         # Set DOMAIN to a real domain and generate a SECRET_KEY_BASE
+cp .env.example .env         # Set DOMAIN, SECRET_KEY_BASE, and ADMIN_PASSWORD
 docker compose up --build
 ```
 
@@ -48,9 +48,8 @@ docker compose up --build
 
 Then visit:
 
-- `https://example.com/setup` — Create admin account and generate DID
-- `https://example.com/.well-known/did.json` — View your DID Document
-- `https://example.com/login` — Log in to send messages
+- `https://example.com/.well-known/did.json` — View your DID Document (auto-generated on first request)
+- `https://example.com/login` — Log in with your `ADMIN_PASSWORD` to send messages
 - `https://example.com/` — Public message feed
 
 The SQLite database is persisted to `web/storage/` via a Docker volume mount.
@@ -59,8 +58,7 @@ The SQLite database is persisted to `web/storage/` via a Docker volume mount.
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /setup` | First-run setup (create admin + generate DID) |
-| `GET /login` | Admin login |
+| `GET /login` | Log in with `ADMIN_PASSWORD` |
 | `GET /messages` | Message list (requires login) |
 | `GET /messages/new` | Send a DIDComm message (requires login) |
 | `POST /didcomm` | Receive DIDComm messages (open API endpoint) |

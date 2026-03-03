@@ -10,14 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_060629) do
-  create_table "admins", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "password_digest"
-    t.datetime "updated_at", null: false
-    t.string "username"
-  end
-
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_144451) do
   create_table "identities", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "did"

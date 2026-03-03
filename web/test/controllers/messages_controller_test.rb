@@ -2,7 +2,7 @@ require "test_helper"
 
 class MessagesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    post login_path, params: { username: "admin", password: "password123" }
+    post login_path, params: { password: ENV["ADMIN_PASSWORD"] }
   end
 
   test "GET /messages requires login" do

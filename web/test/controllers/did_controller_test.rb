@@ -13,9 +13,10 @@ class DidControllerTest < ActionDispatch::IntegrationTest
     assert doc.key?("service")
   end
 
-  test "GET /.well-known/did.json returns 404 when no identity" do
+  test "GET /.well-known/did.json auto-creates identity if missing" do
     Identity.delete_all
     get "/.well-known/did.json"
-    assert_response :not_found
+    assert_response :success
+    assert_equal 1, Identity.count
   end
 end

@@ -1,8 +1,4 @@
 Rails.application.routes.draw do
-  # Setup (first-run only)
-  get  "setup", to: "setup#new"
-  post "setup", to: "setup#create"
-
   # Session
   get    "login",  to: "sessions#new"
   post   "login",  to: "sessions#create"

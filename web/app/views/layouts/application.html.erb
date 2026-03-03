@@ -37,12 +37,12 @@
   <body>
     <nav>
       <%= link_to "Home", root_path %>
-      <% if current_admin %>
+      <% if logged_in? %>
         <%= link_to "Messages", messages_path %>
         <%= link_to "New Message", new_message_path %>
         <%= button_to "Logout", logout_path, method: :delete, style: "display:inline; background:none; color:#0066cc; border:none; padding:0; cursor:pointer; font-size:inherit;" %>
       <% else %>
-        <%= link_to "Login", login_path if Admin.any? %>
+        <%= link_to "Login", login_path %>
       <% end %>
     </nav>
 
