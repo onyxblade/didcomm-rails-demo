@@ -15,7 +15,6 @@ class MessagesController < ApplicationController
   def create
     to_did = params[:to_did].strip
     body_content = params[:body].strip
-    visibility = params[:visibility] || "private"
 
     body_hash = begin
       JSON.parse(body_content)
@@ -30,7 +29,6 @@ class MessagesController < ApplicationController
       to_did: to_did,
       message_type: "https://didcomm.org/basicmessage/2.0/message",
       body: body_hash.to_json,
-      visibility: visibility,
       status: "draft"
     )
 

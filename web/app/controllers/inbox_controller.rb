@@ -27,7 +27,6 @@ class InboxController < ApplicationController
       message_type: msg["type"],
       body: (msg["body"] || {}).to_json,
       packed_message: packed_message,
-      visibility: "private",
       status: "delivered"
     )
 

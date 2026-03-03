@@ -25,7 +25,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET /messages/:id shows message detail" do
-    get message_path(messages(:sent_public))
+    get message_path(messages(:sent_one))
     assert_response :success
     assert_select "pre", /Hello/
   end

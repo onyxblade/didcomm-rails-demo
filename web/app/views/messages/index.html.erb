@@ -11,7 +11,6 @@
         <th>To</th>
         <th>Body</th>
         <th>Status</th>
-        <th>Visibility</th>
         <th>Time</th>
         <th></th>
       </tr>
@@ -24,7 +23,6 @@
           <td class="mono"><%= truncate(msg.to_did || "-", length: 30) %></td>
           <td><%= link_to truncate(msg.body, length: 50), message_path(msg) %></td>
           <td><span class="badge badge-<%= msg.status %>"><%= msg.status %></span></td>
-          <td><span class="badge badge-<%= msg.visibility %>"><%= msg.visibility %></span></td>
           <td><%= msg.created_at.strftime("%Y-%m-%d %H:%M") %></td>
           <td>
             <% if msg.direction == "sent" && msg.status.in?(%w[failed draft]) %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_03_145858) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_184443) do
   create_table "identities", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "ed25519_private_jwk"
@@ -32,6 +32,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_145858) do
     t.string "status"
     t.string "to_did"
     t.datetime "updated_at", null: false
-    t.string "visibility"
   end
 end
